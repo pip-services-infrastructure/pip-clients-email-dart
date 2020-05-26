@@ -1,44 +1,33 @@
-import 'dart:async';
-
 import 'package:pip_clients_email/pip_clients_email.dart';
 import 'package:pip_services3_commons/pip_services3_commons.dart';
 
 class EmailClientFixtureV1 {
-    IEmailClientV1 _client;
-    
-    EmailClientFixtureV1(IEmailClientV1 client) {
-        this._client = client;
-    }
+  IEmailClientV1 _client;
 
-    Future<void> testSendEmailToAddress() async {
-        var message = EmailMessageV1()..fromJson({
-            'to': 'somebody@somewhere.com',
-            'subject': '{{subject}}',
-            'text': '{{text}}',
-            'html': '<p>{{text}}</p>'
-        });
+  EmailClientFixtureV1(IEmailClientV1 client) {
+    _client = client;
+  }
 
-        var parameters = ConfigParams.fromTuples([
-            'subject', 'Test Email To Address',
-            'text', 'This is just a test'
-        ]);
+  void testSendEmailToAddress() async {
+    var message = EmailMessageV1(
+        to: 'somebody@somewhere.com',
+        subject: '{{subject}}',
+        text: '{{text}}',
+        html: '<p>{{text}}</p>');
 
-        await this._client.sendMessage(null, message, parameters);
-    }
+    var parameters = ConfigParams.fromTuples(
+        ['subject', 'Test Email To Address', 'text', 'This is just a test']);
 
-    Future<void> testSendEmailToRecipients() async {
-        var message = EmailMessageV1()..fromJson({
-            'subject': 'Test Email To Recipient',
-            'text': 'This is just a test'
-        });
+    await _client.sendMessage(null, message, parameters);
+  }
 
-        var recipient = EmailRecipientV1()..fromJson({
-            'id': '1',
-            'email': 'somebody@somewhere.com',
-            'name': 'Test Recipient'
-        });
+  void testSendEmailToRecipients() async {
+    var message = EmailMessageV1(
+        subject: 'Test Email To Recipient', text: 'This is just a test');
 
-        await this._client.sendMessageToRecipient(null, recipient, message, null);
-    }
-        
+    var recipient = EmailRecipientV1(
+        id: '1', email: 'somebody@somewhere.com', name: 'Test Recipient');
+
+    await _client.sendMessageToRecipient(null, recipient, message, null);
+  }
 }

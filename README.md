@@ -1,4 +1,4 @@
-# Email Microservice Client SDK for Dart
+# <img src="https://github.com/pip-services/pip-services/raw/master/design/Logo.png" alt="Pip.Services Logo" style="max-width:30%"> <br> Email Microservice Client SDK for Dart
 
 This is a Node.js client SDK for [pip-services-email](https://github.com/pip-services-infrastructure/pip-services-email-dart) microservice.
 It provides an easy to use abstraction over communication protocols:
@@ -34,6 +34,7 @@ var config = ConfigParams.fromTuples(
 	"connection.port", 8080
 );
 ```
+
 Instantiate the client and open connection to the microservice
 ```dart
 // Create the client instance
@@ -50,32 +51,36 @@ await client.open(null);
 Now the client is ready to perform operations
 ```dart
 // Send email message to address
+        var message = EmailMessageV1(to: 'somebody@somewhere.com',
+            subject: '{{subject}}',
+            text: '{{text}}',
+            html: '<p>{{text}}</p>');
+
+        var parameters = ConfigParams.fromTuples([
+            'subject', 'Test Email To Address',
+            'text', 'This is just a test'
+        ]);
+
 await client.sendMessage(
     null,
-    EmailMessageV1()..fromJson({ 
-        'to': 'somebody@somewhere.com',
-        'subject': 'Test',
-        'text': 'This is a test message. Please, ignore it'
-    }),
-    ConfigParams.fromTuples([
-        'subject', 'Test Email To Address',
-        'text', 'This is just a test'
-    ])
+    message,
+    parameters
 );
 ```
 
 ```dart
 // Send email message to users
+var recipient1 = EmailRecipientV1(id: '1', email: 'user1@somewhere.com');
+var recipient2 = EmailRecipientV1(id: '2', email: 'user2@somewhere.com');
+var message = EmailMessageV1(subject: 'Test', 
+                             text: 'This is a test message. Please, ignore it');
 await client.sendMessageToRecipients(
     null,
     [
-        EmailRecipientV1()..fromJson({ id: '123', email: 'user1@somewhere.com' }),
-        EmailRecipientV1()..fromJson({ id: '321', email: 'user2@somewhere.com' })
+        recipient1,
+        recipient2
     ],
-    EmailMessageV1()..fromJson({ 
-        'subject': 'Test',
-        'text': 'This is a test message. Please, ignore it'
-    }),
+    message,
     null
 );
 ```
@@ -108,22 +113,22 @@ Client will automatically load their content and parse.
 
 ```dart
 // Send email message to address using template
-await client.sendMessage(
-    null,
-    EmailMessageV1()..fromJson({  
-        'to': 'somebody@somewhere.com',
-        'subject': File('./templates/message_subject.txt').readAsStringSync(),
-        'text': File('./templates/message.txt').readAsStringSync(),
-        'html': File('./templates/message.html').readAsStringSync(),
-    }),
-    ConfigParams.fromTuples([
+var message = EmailMessageV1(to: 'somebody@somewhere.com', 
+                             subject: File('./templates/message_subject.txt').readAsStringSync(), 
+                             text: File('./templates/message.txt').readAsStringSync(),
+                             html: File('./templates/message.html').readAsStringSync());
+var parameters = ConfigParams.fromTuples([
         'user_name', 'Somebody',
         'today': DateTime.now().toIso8601String()
-    ])
+    ]);
+await client.sendMessage(
+    null,
+    message,
+    parameters
 );
 ```
 
-## Acknowledgements
-
-This client SDK was created and currently maintained by *Sergey Seroukhov*.
-
+This microservice was created and currently maintained by
+- **Sergey Seroukhov**
+- **Denis Kuznetsov**
+- **Nuzhnykh Egor**.

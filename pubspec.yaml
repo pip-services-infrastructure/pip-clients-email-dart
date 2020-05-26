@@ -1,8 +1,7 @@
 name: pip_clients_email
-version: 1.0.0
-author: Sergey Seroukhov
-description: Email Microservice
-homepage: https://github.com/
+version: "1.0.0"
+description: Clients for Email Delivery microservice for Pip.Services in Dart.
+homepage: https://github.com/pip-services-infrastructure/pip-clients-email-dart
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

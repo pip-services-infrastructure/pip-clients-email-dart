@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 0.30.3">
+  <meta name="description" content="pip_clients_email API docs, for the Dart programming language.">
+  <title>pip_clients_email - Dart API docs</title>
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500,400i,400,300|Source+Sans+Pro:400,300,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="static-assets/github.css">
+  <link rel="stylesheet" href="static-assets/styles.css">
+  <link rel="icon" href="static-assets/favicon.png">
+
+</head>
+
+<body data-base-href=""
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/pip-services-infrastructure/pip-clients-email-dart">pip_clients_email package</a></li>
+  </ol>
+  <div class="self-name">pip_clients_email</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+  <div id="dartdoc-sidebar-left" class="col-xs-6 col-sm-3 col-md-2 sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+      <form class="search-sidebar" role="search">
+        <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+      </form>
+    </header>
+    
+    <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+      <li><a href="https://github.com/pip-services-infrastructure/pip-clients-email-dart">pip_clients_email package</a></li>
+    </ol>
+    
+    <h5 class="hidden-xs"><span class="package-name">pip_clients_email</span> <span class="package-kind">package</span></h5>
+    <ol>
+          <li class="section-title">Libraries</li>
+          <li><a href="pip_clients_email/pip_clients_email-library.html">pip_clients_email</a></li>
+    </ol>
+  </div>
+
+  <div id="dartdoc-main-content" class="col-xs-12 col-sm-9 col-md-8 main-content">
+      <section class="desc markdown">
+        <h1 id="img-srchttpsgithubcompip-servicespip-servicesrawmasterdesignlogopng-altpipservices-logo-stylemax-width30-br-email-microservice-client-sdk-for-dart"><img src="https://github.com/pip-services/pip-services/raw/master/design/Logo.png" alt="Pip.Services Logo" style="max-width:30%"> <br> Email Microservice Client SDK for Dart</h1>
+<p>This is a Node.js client SDK for <a href="https://github.com/pip-services-infrastructure/pip-services-email-dart">pip-services-email</a> microservice.
+It provides an easy to use abstraction over communication protocols:</p>
+<ul>
+<li>HTTP client</li>
+<li>Direct client for monolythic deployments</li>
+<li>Null client to be used in testing</li>
+</ul>
+<p>In addition to the microservice functionality the client SDK supports message templates 
+that can be configured by client user. </p>
+<p><a name="links"></a> Quick Links:</p>
+<ul>
+<li><a href="doc/Development.md">Development Guide</a></li>
+<li><a href="doc/NodeClientApiV1.md">API Version 1</a></li>
+</ul>
+<h2 id="install">Install</h2>
+<p>Add <strong>pip-services3-commons-dart</strong> and <strong>pip_clients_email</strong> packages</p>
+<pre class="language-dart"><code class="language-dart">import 'package:pip_services3_commons/pip_services3_commons.dart';
+import 'package:pip_clients_email/pip_clients_email.dart';
+</code></pre>
+<h2 id="use">Use</h2>
+<p>Define client configuration parameters that match configuration of the microservice external API</p>
+<pre class="language-dart"><code class="language-dart">// Client configuration
+var config = ConfigParams.fromTuples(
+	"connection.protocol", "http",
+	"connection.host", "localhost",
+	"connection.port", 8080
+);
+</code></pre>
+<p>Instantiate the client and open connection to the microservice</p>
+<pre class="language-dart"><code class="language-dart">// Create the client instance
+var client = EmailHttpClientV1(config);
+
+// Connect to the microservice
+await client.open(null);
+    
+    // Work with the microservice
+    ...
+});
+</code></pre>
+<p>Now the client is ready to perform operations</p>
+<pre class="language-dart"><code class="language-dart">// Send email message to address
+        var message = EmailMessageV1(to: 'somebody@somewhere.com',
+            subject: '{{subject}}',
+            text: '{{text}}',
+            html: '&lt;p&gt;{{text}}&lt;/p&gt;');
+
+        var parameters = ConfigParams.fromTuples([
+            'subject', 'Test Email To Address',
+            'text', 'This is just a test'
+        ]);
+
+await client.sendMessage(
+    null,
+    message,
+    parameters
+);
+</code></pre>
+<pre class="language-dart"><code class="language-dart">// Send email message to users
+var recipient1 = EmailRecipientV1(id: '1', email: 'user1@somewhere.com');
+var recipient2 = EmailRecipientV1(id: '2', email: 'user2@somewhere.com');
+var message = EmailMessageV1(subject: 'Test', 
+                             text: 'This is a test message. Please, ignore it');
+await client.sendMessageToRecipients(
+    null,
+    [
+        recipient1,
+        recipient2
+    ],
+    message,
+    null
+);
+</code></pre>
+<p>To use templates for sent messages you need to put template files
+under configured template folder. Inside template you shall use &lt;%= property %&gt; syntax
+to insert properties from provided <strong>content</strong> defined in client configuration and request parameters.</p>
+<p>Example of <strong>message.txt</strong> template</p>
+<pre class="language-text"><code class="language-text">Hello &lt;%= user_name %&gt;!
+
+This is a test message from &lt;%= client_name %&gt; sent on &lt;%= today %&gt;.
+Please, ignore it.
+</code></pre>
+<p>Example of <strong>message.html</strong> template</p>
+<pre class="language-html"><code class="language-html">Hello &lt;%= user_name %&gt;!
+&lt;p&gt;
+This is a test message from &lt;%= client_name %&gt; sent on &lt;%= today %&gt;. 
+&lt;br/&gt;
+Please, ignore it.
+&lt;/p&gt;
+</code></pre>
+<p>Now you can send a message using the templates stored in files. 
+<strong>subjectTemplate</strong>, <strong>textTemplate</strong> and <strong>htmlTemplate</strong> parameters shall contain the template file paths.
+Client will automatically load their content and parse.</p>
+<pre class="language-dart"><code class="language-dart">// Send email message to address using template
+var message = EmailMessageV1(to: 'somebody@somewhere.com', 
+                             subject: File('./templates/message_subject.txt').readAsStringSync(), 
+                             text: File('./templates/message.txt').readAsStringSync(),
+                             html: File('./templates/message.html').readAsStringSync());
+var parameters = ConfigParams.fromTuples([
+        'user_name', 'Somebody',
+        'today': DateTime.now().toIso8601String()
+    ]);
+await client.sendMessage(
+    null,
+    message,
+    parameters
+);
+</code></pre>
+<p>This microservice was created and currently maintained by</p>
+<ul>
+<li><strong>Sergey Seroukhov</strong></li>
+<li><strong>Denis Kuznetsov</strong></li>
+<li><strong>Nuzhnykh Egor</strong>.</li>
+</ul>
+      </section>
+      
+        <section class="summary">
+            <h2>Libraries</h2>
+          <dl>
+            <dt id="pip_clients_email">
+              <span class="name"><a href="pip_clients_email/pip_clients_email-library.html">pip_clients_email</a></span>             
+            </dt>
+            <dd>
+               
+            </dd>
+          </dl>
+        </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-right" class="col-xs-6 col-sm-6 col-md-2 sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    pip_clients_email
+      1.0.0
+  </span>
+
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="static-assets/typeahead.bundle.min.js"></script>
+<script src="static-assets/highlight.pack.js"></script>
+<script src="static-assets/URI.js"></script>
+<script src="static-assets/script.js"></script>
+
+
+</body>
+
+</html>

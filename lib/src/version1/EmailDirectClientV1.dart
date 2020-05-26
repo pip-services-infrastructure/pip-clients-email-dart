@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:pip_services3_commons/pip_services3_commons.dart';
 import 'package:pip_services3_rpc/pip_services3_rpc.dart';
-import 'package:pip_services_email/pip_services_email.dart' as service;
+//import 'package:pip_services_email/pip_services_email.dart' as service;
 import 'package:pip_clients_email/pip_clients_email.dart';
 
 import 'EmailRecipientV1.dart';
@@ -12,69 +12,67 @@ class EmailDirectClientV1 extends DirectClient<dynamic>
     implements IEmailClientV1 {
   ConfigParams _defaultParameters;
 
-  EmailDirectClientV1([dynamic config]) 
-        : super() {
-    this.dependencyResolver.put('controller',
-        new Descriptor('pip-services-email', 'controller', '*', '*', '*'));
+  EmailDirectClientV1([dynamic config]) : super() {
+    dependencyResolver.put('controller',
+        Descriptor('pip-services-email', 'controller', '*', '*', '*'));
     var thisConfig = ConfigParams.fromValue(config);
-    this._defaultParameters = thisConfig.getSection('parameters');
-    if (config != null) this.configure(thisConfig);
+    _defaultParameters = thisConfig.getSection('parameters');
+    if (config != null) configure(thisConfig);
   }
 
-  Future<void> sendMessage(String correlationId, EmailMessageV1 message,
+  /// Send the message
+  ///
+  /// - [correlation_id]    (optional) transaction id to trace execution through call chain.
+  /// - [message]              a message to be send.
+  /// - [parameters]              an additional parameters to be send.
+  @override
+  Future sendMessage(String correlationId, EmailMessageV1 message,
       ConfigParams parameters) async {
-    
-    parameters = this._defaultParameters.override(parameters);
-    var timing = this.instrument(correlationId, 'email.send_message');
-
-    await this.controller.sendMessage(correlationId, convertMessageToPublic(message), parameters);
-    
+    parameters = _defaultParameters.override(parameters);
+    var timing = instrument(correlationId, 'email.send_message');
+    var result =
+        await controller.sendMessage(correlationId, message, parameters);
     timing.endTiming();
+    return result;
   }
 
-  Future<void> sendMessageToRecipient(
+  /// Send the message to recipient
+  ///
+  /// - [correlation_id]    (optional) transaction id to trace execution through call chain.
+  /// - [recipient]              a recipient of the message.
+  /// - [message]              a message to be send.
+  /// - [parameters]              an additional parameters to be send.
+  @override
+  Future sendMessageToRecipient(
       String correlationId,
       EmailRecipientV1 recipient,
       EmailMessageV1 message,
       ConfigParams parameters) async {
-    
-    parameters = this._defaultParameters.override(parameters);
-    var timing = this.instrument(correlationId, 'email.send_message_to_recipient');
-    
-    await this.controller.sendMessageToRecipient(
-      correlationId, 
-      convertRecipientToPublic(recipient), 
-      convertMessageToPublic(message), 
-      parameters);
-
+    parameters = _defaultParameters.override(parameters);
+    var timing = instrument(correlationId, 'email.send_message_to_recipient');
+    var result = await controller.sendMessageToRecipient(
+        correlationId, recipient, message, parameters);
     timing.endTiming();
+    return result;
   }
 
-  Future<void> sendMessageToRecipients(
+  /// Send the message to recipients
+  ///
+  /// - [correlation_id]    (optional) transaction id to trace execution through call chain.
+  /// - [recipients]              a recipients of the message.
+  /// - [message]              a message to be send.
+  /// - [parameters]              an additional parameters to be send.
+  @override
+  Future sendMessageToRecipients(
       String correlationId,
       List<EmailRecipientV1> recipients,
       EmailMessageV1 message,
       ConfigParams parameters) async {
-    
-    parameters = this._defaultParameters.override(parameters);
-    var timing = this.instrument(correlationId, 'email.send_message_to_recipients');
-    
-    await this.controller.sendMessageToRecipients(
-        correlationId, 
-        recipients.map((e) => convertRecipientToPublic(e)).toList(), 
-        convertMessageToPublic(message), parameters);
-    
+    parameters = _defaultParameters.override(parameters);
+    var timing = instrument(correlationId, 'email.send_message_to_recipients');
+    var result = await controller.sendMessageToRecipients(
+        correlationId, recipients, message, parameters);
     timing.endTiming();
+    return result;
   }
-
-  service.EmailMessageV1 convertMessageToPublic(EmailMessageV1 message)
-  {
-      return service.EmailMessageV1()..fromJson(message.toJson());
-  }
-
-  service.EmailRecipientV1 convertRecipientToPublic(EmailRecipientV1 recipient)
-  {
-      return service.EmailRecipientV1()..fromJson(recipient.toJson());
-  }
-
 }
