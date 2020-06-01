@@ -37,12 +37,12 @@ void main() {
       await client.close(null);
     });
 
-    // test('Send Email to Address', () async {
-    //     await fixture.testSendEmailToAddress();
-    // });
+    test('Send Email to Address', () async {
+        await fixture.testSendEmailToAddress();
+    });
 
-    // test('Send Email to Recipients', () async {
-    //     await fixture.testSendEmailToRecipients();
-    // });
+    test('Send Email to Recipients', () async {
+        await fixture.testSendEmailToRecipients();
+    });
   });
 }

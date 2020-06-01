@@ -1,5 +1,6 @@
 import 'package:pip_clients_email/pip_clients_email.dart';
 import 'package:pip_services3_commons/pip_services3_commons.dart';
+import 'package:pip_services_email/pip_services_email.dart';
 
 Future<void> main(List<String> argument) async {
   try {

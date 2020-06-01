@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:pip_services3_commons/pip_services3_commons.dart';
-import '../../src/version1/EmailMessageV1.dart';
-import '../../src/version1/EmailRecipientV1.dart';
+import 'package:pip_services_email/pip_services_email.dart';
+
 
 abstract class IEmailClientV1 {
   /// Send the message

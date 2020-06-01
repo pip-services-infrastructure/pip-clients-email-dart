@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:pip_services3_commons/pip_services3_commons.dart';
 import 'package:pip_services3_rpc/pip_services3_rpc.dart';
-//import 'package:pip_services_email/pip_services_email.dart' as service;
 import 'package:pip_clients_email/pip_clients_email.dart';
 
-import 'EmailRecipientV1.dart';
+import 'package:pip_services_email/pip_services_email.dart';
 import 'IEmailClientV1.dart';
 
 class EmailDirectClientV1 extends DirectClient<dynamic>

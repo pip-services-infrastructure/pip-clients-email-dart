@@ -1,6 +1,6 @@
 # <img src="https://github.com/pip-services/pip-services/raw/master/design/Logo.png" alt="Pip.Services Logo" style="max-width:30%"> <br> Email Microservice Client SDK for Dart
 
-This is a Node.js client SDK for [pip-services-email](https://github.com/pip-services-infrastructure/pip-services-email-dart) microservice.
+This is a Dart client SDK for [pip-services-email](https://github.com/pip-services-infrastructure/pip-services-email-dart) microservice.
 It provides an easy to use abstraction over communication protocols:
 
 * HTTP client
